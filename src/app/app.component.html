@@ -1,0 +1,42 @@
+<main class="main">
+  <div class="content">
+    <div class="card">
+      <div class="flex flex-column md:flex-row justify-content-between align-items-center">
+        <div class="flex align-items-center gap-3 w-full md:w-auto">
+          <img src="assets/images/logo-DR.webp" alt="Different Roads Logo" height="40" class="mr-2" />
+          <p-megaMenu [model]="items" styleClass="custom-mega-menu" [orientation]="screenWidth > 960 ? 'horizontal' : 'vertical'" />
+        </div>
+        <div class="flex-none mt-3 md:mt-0">
+          <p-toast />
+          <button pButton label="Inicia Sesión" icon="pi pi-user" class="p-button-outlined" (click)="show()"></button>
+        </div>
+      </div>
+    </div>
+    <div class="video-banner">
+      <video autoplay muted loop playsinline preload="auto" class="responsive-video">
+        <source src="https://d2sk3o7yhm4ek9.cloudfront.net/public/main-banner/desktop/fdb7592e-79e7-41bf-b1dd-36db39611353/banner%20web.mp4" type="video/mp4">
+        Tu navegador no soporta el video.
+      </video>
+    </div>
+  </div>
+</main>
+<app-list></app-list>
+<app-map></app-map>
+<app-table></app-table>
+<!-- <div class="tour-container">
+  <div class="tour-card" *ngIf="tours.length > 0">
+    <h3>{{ tours[0].name }}</h3>
+    <span class="status-badge" [ngClass]="tours[0].status.toLowerCase()">
+      {{ tours[0].status }}
+    </span>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+</div> -->
+<router-outlet />
