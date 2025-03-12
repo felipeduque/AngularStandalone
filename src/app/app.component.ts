@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, effect, inject, resource, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MessageService, MegaMenuItem } from 'primeng/api';
 import { MegaMenu } from 'primeng/megamenu';
@@ -8,30 +8,70 @@ import { ImportsModule } from '../app/imports';
 import { MapComponent } from './components/map/map.component';
 import { ListComponent } from './components/list/list.component';
 import { TableComponent } from './components/table/table.component';
-import { Tour } from './domain/tour';
+//import { Tour } from './domain/tour';
 import { TourService } from './services/tour.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { environment } from '../environments/environment';
+import { Tour } from './domain/tour.model';
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ImportsModule,ListComponent, MapComponent, TableComponent],
+  imports: [RouterOutlet, ImportsModule,ListComponent, MapComponent, TableComponent, MatSlideToggleModule, MatProgressSpinner],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
   providers: [MessageService, MegaMenu]
 })
 export class AppComponent implements OnInit {
-  tours: Tour[] = [];
+  //tours: Tour[] = [];
   items: MegaMenuItem[] | undefined;
   screenWidth: number;
   loading: boolean = false;
   error: string | null = null;
 
+  env = environment;
+
+  search = signal<string>('');
+
+  tours = resource<Tour[], {search:string}>({
+    request: () => ({
+      search: this.search()
+    }),
+    loader: async ({request, abortSignal}) => {
+      const response = await
+        fetch(`${this.env.apiRoot}/otherusercase/path?query=${request.search}&courseId=18`,
+          {
+            signal: abortSignal
+          });
+      const json = await response.json();
+      return json.tours;
+    }
+  });
+
+
   constructor(private messageService: MessageService, private tourService: TourService) {
     this.screenWidth = window.innerWidth;
     //this.tours = this.tourService.getTours();
+    effect(() => {
+      console.log('searching tours:', this.search() );
+    })
   }
 
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
+  }
+
+
+  searchTours(search: string) {
+    this.search.set(search);
+  }
+
+  reset() {
+
+  }
+
+  reload() {
+
   }
 
   ngOnInit() {
@@ -176,6 +216,6 @@ export class AppComponent implements OnInit {
           severity: 'info', 
           summary: 'Info', 
           detail: 'Message Content', 
-          life: 3000 });
+          life: 3000 });MatSlideToggleModule
     }
 }

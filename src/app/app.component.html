@@ -21,8 +21,57 @@
   </div>
 </main>
 <app-list></app-list>
+
+<div class="demo-container">
+
+  <h1>resource search tours</h1>
+
+  <div class="course-header">
+
+    <div class="form-control">
+      <input placeholder="Search tours"
+             (keydown)="searchTours(input.value)" #input>
+    </div>
+
+</div>
+
+    @if(tours.isLoading()) {
+      <mat-spinner class="loading"/>
+    }
+    @else {
+      <div class="table-container">
+        <table class="results-table">
+          @for(tour of tours.value(); track tour.id) {
+            <tr>
+              <td>
+                {{tour.name}}
+              </td>
+            </tr>
+          }
+          @empty {
+            <div class="no-lessons">
+              No tours found.
+            </div>
+          }
+        </table>
+      </div>
+    }
+
+    <button class="btn reload-btn" (click)="reload()">
+      Reload Lessons
+    </button>
+
+    <button class="btn" (click)="reset()">
+      Reset Lessons
+    </button>
+
+
+</div>
+
+
 <app-map></app-map>
 <app-table></app-table>
+<mat-slide-toggle>Toggle me!</mat-slide-toggle>
 <!-- <div class="tour-container">
   <div class="tour-card" *ngIf="tours.length > 0">
     <h3>{{ tours[0].name }}</h3>
